@@ -1,15 +1,17 @@
 import java.util.Arrays;
 
-public class RadixSortLSD {
+// For Positive Whole Numbers Only
+public class RadixSortLSD implements SortingAlgorithm {
     private final int[] array;
     public RadixSortLSD(int[] array) {
         this.array = array;
     }
 
     public void sort() {
+        System.out.println("Radix Sort LSD");
+        printArr(array);
         int max = getArrayMax(array);
         int maxDigits = getDigitCount(max);
-        printArr(array);
         for (int exp = 1; maxDigits / exp > 0; exp *= 10) {
             countingSort(array, exp);
         }
@@ -53,7 +55,7 @@ public class RadixSortLSD {
         return count;
     }
 
-    public void printArr(int[] arr) {
+    private void printArr(int[] arr) {
         System.out.println("Array: ");
         for (int num : arr) {
             System.out.print(num + " ");
