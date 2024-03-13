@@ -15,7 +15,7 @@ public class RadixSortMSD {
             n.insertNum(array[i]);
         }
 
-        int[] sortedArray = array.clone();
+        int[] sortedArray = new int[array.length];
         int[] index = {0};
         int max = getArrayMax(array);
 
