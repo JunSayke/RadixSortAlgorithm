@@ -1,27 +1,28 @@
 import java.util.Arrays;
 
 // For Positive Whole Numbers Only
-public class RadixSortLSD implements SortingAlgorithm {
-    private final int[] array;
-    public RadixSortLSD(int[] array) {
-        this.array = array;
+public class RadixSortLSD {
+    public RadixSortLSD() {
     }
 
-    public void sort() {
+    public int[] sort(int[] array) {
         System.out.println("Radix Sort LSD");
         printArr(array);
+
+        int[] sortedArray = new int[array.length];
         int max = getArrayMax(array);
-        int maxDigits = getDigitCount(max);
-        for (int exp = 1; maxDigits / exp > 0; exp *= 10) {
-            countingSort(array, exp);
+
+        for (int exp = 1; getDigitCount(max) / exp > 0; exp *= 10) {
+            countingSort(array, exp, sortedArray);
         }
-        printArr(array);
+
+        printArr(sortedArray);
+        return sortedArray;
     }
 
-    public void countingSort(int[] array, int exp) {
+    private void countingSort(int[] array, int exp, int[] sortedArray) {
         int range = 10;
         int[] frequency = new int[range];
-        int[] sortedArr = new int[array.length];
 
         for (int i = 0; i < array.length; i++) {
             int digit = (array[i] / exp) % 10;
@@ -35,18 +36,16 @@ public class RadixSortLSD implements SortingAlgorithm {
         for (int i = array.length - 1; i >= 0; i--) {
             int digit = (array[i] / exp) % 10;
             int digitPos = frequency[digit] - 1;
-            sortedArr[digitPos] = array[i];
+            sortedArray[digitPos] = array[i];
             frequency[digit]--;
         }
-
-        System.arraycopy(sortedArr, 0, array, 0, sortedArr.length);
     }
 
-    public int getArrayMax(int[] arr) {
+    private int getArrayMax(int[] arr) {
         return Arrays.stream(arr).max().orElse(Integer.MIN_VALUE);
     }
 
-    public int getDigitCount(int num) {
+    private int getDigitCount(int num) {
         int count = 0;
         while (num != 0) {
             num /= 10;

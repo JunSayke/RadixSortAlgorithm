@@ -2,17 +2,61 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 // For Positive Whole Numbers Only
-public class RadixSortMSD implements SortingAlgorithm {
-    private final int[] originalArray;
-    private int index;
-
-    private Node createNode() {
-        return new Node();
+public class RadixSortMSD {
+    public RadixSortMSD() {
     }
 
-    public RadixSortMSD(int[] array) {
-        this.originalArray = array;
-        index = 0;
+    public int[] sort(int[] array) {
+        System.out.println("Radix Sort MSD");
+        printArr(array);
+
+        Node n = new Node();
+        for (int i = 0; i < array.length; i++) {
+            n.insertNum(array[i]);
+        }
+
+        int[] sortedArray = array.clone();
+        int[] index = {0};
+        int max = getArrayMax(array);
+
+        bucketSort(n, (int) Math.pow(10, getDigitCount(max) - 1), sortedArray, index);
+
+        printArr(sortedArray);
+        return sortedArray;
+    }
+
+    public void bucketSort(Node n, int exp, int[] sortedArray, int[] currentSortedArrayIndexReference) {
+        ArrayList<Integer> array = n.getArray();
+
+        if (exp < 1) {
+            for (int i = 0; i < array.size(); i++) {
+                int pos = currentSortedArrayIndexReference[0]++;
+                sortedArray[pos] = array.get(i);
+            }
+            return;
+        }
+
+        Node[] nodes = n.getNodes();
+        for (int i = 0; i < array.size(); i++) {
+            int currentDigit = (array.get(i) / exp) % 10;
+            if (nodes[currentDigit] == null) {
+                nodes[currentDigit] = new Node();
+            }
+            nodes[currentDigit].insertNum(array.get(i));
+        }
+
+        for (int i = 0; i < 10; i++) {
+            if (nodes[i] == null) {
+                continue;
+            }
+            ArrayList<Integer> currentNodeArr = nodes[i].getArray();
+            if (currentNodeArr.size() <= 1) {
+                int pos = currentSortedArrayIndexReference[0]++;
+                sortedArray[pos] = currentNodeArr.get(0);
+            } else {
+                bucketSort(nodes[i], exp / 10, sortedArray, currentSortedArrayIndexReference);
+            }
+        }
     }
 
     public int getArrayMax(int[] arr) {
@@ -28,50 +72,6 @@ public class RadixSortMSD implements SortingAlgorithm {
         return count;
     }
 
-    public void sort() {
-        System.out.println("Radix Sort MSD");
-        printArr(originalArray);
-        Node n = createNode();
-        for (int i = 0; i < originalArray.length; i++) {
-            n.insertNum(originalArray[i]);
-        }
-        int max = getArrayMax(originalArray);
-        bucketSort(n, (int) Math.pow(10, getDigitCount(max) - 1));
-        printArr(originalArray);
-    }
-
-    public void bucketSort(Node n, int exp) {
-        ArrayList<Integer> arr = n.arr;
-
-        if (exp < 1) {
-            for (int i = 0; i < arr.size(); i++) {
-                originalArray[index++] = arr.get(i);
-            }
-            return;
-        }
-
-        Node[] nodes = n.next;
-        for (int i = 0; i < arr.size(); i++) {
-            int currentDigit = (arr.get(i) / exp) % 10;
-            if (nodes[currentDigit] == null) {
-                nodes[currentDigit] = createNode();
-            }
-            nodes[currentDigit].insertNum(arr.get(i));
-        }
-
-        for (int i = 0; i < 10; i++) {
-            if (nodes[i] == null) {
-                continue;
-            }
-            ArrayList<Integer> currentNodeArr = nodes[i].arr;
-            if (currentNodeArr.size() <= 1) {
-                originalArray[index++] = currentNodeArr.get(0);
-            } else {
-                bucketSort(nodes[i], exp / 10);
-            }
-        }
-    }
-
     private void printArr(int[] arr) {
         System.out.println("Array: ");
         for (int num : arr) {
@@ -82,14 +82,22 @@ public class RadixSortMSD implements SortingAlgorithm {
 }
 
 class Node {
-    ArrayList<Integer> arr;
-    Node[] next;
+    private final ArrayList<Integer> array;
+    private final Node[] nodes;
     public Node() {
-        arr = new ArrayList<>();
-        next = new Node[10];
+        array = new ArrayList<>();
+        nodes = new Node[10];
     }
 
     public void insertNum(int x) {
-        arr.add(x);
+        array.add(x);
+    }
+
+    public ArrayList<Integer> getArray() {
+        return array;
+    }
+
+    public Node[] getNodes() {
+        return nodes;
     }
 }
