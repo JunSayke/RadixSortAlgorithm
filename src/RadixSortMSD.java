@@ -57,6 +57,8 @@ public class RadixSortMSD {
                 bucketSort(nodes[i], exp / 10, sortedArray, currentSortedArrayIndexReference);
             }
         }
+
+        System.out.println(Arrays.toString(sortedArray));
     }
 
     public int getArrayMax(int[] arr) {

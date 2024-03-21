@@ -9,11 +9,12 @@ public class RadixSortLSD {
         System.out.println("Radix Sort LSD");
         printArr(array);
 
+        int[] arrayCloned = array.clone();
         int[] sortedArray = new int[array.length];
         int max = getArrayMax(array);
 
-        for (int exp = 1; getDigitCount(max) / exp > 0; exp *= 10) {
-            countingSort(array, exp, sortedArray);
+        for (int exp = 1; max / exp > 0; exp *= 10) {
+            countingSort(arrayCloned, exp, sortedArray);
         }
 
         printArr(sortedArray);
@@ -39,6 +40,9 @@ public class RadixSortLSD {
             sortedArray[digitPos] = array[i];
             frequency[digit]--;
         }
+
+        System.arraycopy(sortedArray, 0, array, 0, array.length);
+        System.out.println(Arrays.toString(array));
     }
 
     private int getArrayMax(int[] arr) {
