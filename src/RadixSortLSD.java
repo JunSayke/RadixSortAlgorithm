@@ -12,7 +12,7 @@ public class RadixSortLSD {
         int[] sortedArray = new int[array.length];
         int max = getArrayMax(array);
 
-        for (int exp = 1; getDigitCount(max) / exp > 0; exp *= 10) {
+        for (int exp = 1; max / exp > 0; exp *= 10) {
             countingSort(array, exp, sortedArray);
         }
 
